@@ -49,6 +49,6 @@ function gameManifestPlugin() {
 }
 
 export default defineConfig({
-  base: '/Unterrichtsspiele/',
+  base: '/',
   plugins: [react(), gameManifestPlugin()],
 })

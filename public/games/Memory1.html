@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory - Mi habitación y verbos</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .game-board { display: grid; grid-template-columns: repeat(4, 120px); gap: 10px; justify-content: center; margin-top: 20px; }
+        .card { width: 100px; height: 100px; background-color: lightgray; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; border-radius: 10px; border: 1px solid black; }
+        .flipped { background-color: white; }
+        .matched { background-color: lightgreen; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <h2>Memory: Verbos y objetos de mi habitación</h2>
+    <p>Encuentra las parejas correctas.</p>
+    <div class="game-board" id="gameBoard"></div>
+    <button onclick="resetGame()">Reiniciar</button>
+
+    <script>
+        const cardsData = [
+            { text: "la cama", pair: "das Bett" },
+            { text: "das Bett", pair: "la cama" },
+            { text: "el portátil", pair: "der Laptop" },
+            { text: "der Laptop", pair: "el portátil" },
+            { text: "el armario", pair: "der Schrank" },
+            { text: "der Schrank", pair: "el armario" },
+            { text: "la estantería", pair: "das Regal" },
+            { text: "das Regal", pair: "la estantería" },
+            { text: "quiero", pair: "ich will" },
+            { text: "ich will", pair: "quiero" },
+            { text: "puedes", pair: "du kannst" },
+            { text: "du kannst", pair: "puedes" },
+            { text: "tiene que", pair: "er/sie muss" },
+            { text: "er/sie muss", pair: "tiene que" },
+            { text: "tenemos que", pair: "wir müssen" },
+            { text: "wir müssen", pair: "tenemos que" }
+        ];
+
+        let shuffledCards = [];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function createBoard() {
+            const board = document.getElementById("gameBoard");
+            board.innerHTML = "";
+            shuffledCards = shuffle([...cardsData]);
+
+            shuffledCards.forEach((card, index) => {
+                const div = document.createElement("div");
+                div.classList.add("card");
+                div.dataset.text = card.text;
+                div.dataset.pair = card.pair;
+                div.addEventListener("click", flipCard);
+                board.appendChild(div);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard || this.classList.contains("flipped") || this.classList.contains("matched")) return;
+            
+            this.classList.add("flipped");
+            this.textContent = this.dataset.text;
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            lockBoard = true;
+
+            checkMatch();
+        }
+
+        function checkMatch() {
+            if (firstCard.dataset.pair === secondCard.dataset.text) {
+                firstCard.classList.add("matched");
+                secondCard.classList.add("matched");
+                resetTurn();
+            } else {
+                setTimeout(() => {
+                    firstCard.textContent = "";
+                    secondCard.textContent = "";
+                    firstCard.classList.remove("flipped");
+                    secondCard.classList.remove("flipped");
+                    resetTurn();
+                }, 1000);
+            }
+        }
+
+        function resetTurn() {
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+        }
+
+        function resetGame() {
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+            createBoard();
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>

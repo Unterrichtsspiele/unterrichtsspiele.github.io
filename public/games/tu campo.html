@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hundir la flota - Tu campo</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { margin: 20px auto; border-collapse: collapse; display: inline-block; }
+        th, td { border: 1px solid black; width: 80px; height: 50px; text-align: center; cursor: pointer; }
+        .hit { background-color: red; color: white; }
+        .miss { background-color: lightgray; }
+        .ship { background-color: blue; color: white; }
+    </style>
+</head>
+<body>
+    <h2>Hundir la flota - Tu campo</h2>
+    <p>Coloca un barco de 4, uno de 3, uno de 2 y uno de 1 casilla. ¡Luego comienza el juego!</p>
+    <div>
+        <h3>Tu campo</h3>
+        <table id="gameBoard">
+            <tr>
+                <th></th><th>Yo</th><th>Tú</th><th>Él/Ella</th><th>Nosotros/as</th><th>Vosotros/as</th><th>Ellos/as</th>
+            </tr>
+            <tr><th>Querer</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Tener que</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Poder</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Hablar</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Vivir</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Comer</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table>
+    </div>
+    <p id="statusMessage"></p>
+    <button id="resetButton" onclick="resetGame()">Reiniciar</button>
+
+    <script>
+        let placingShips = true;
+        let shipsToPlace = [4, 3, 2, 1]; // Tamaños de los barcos
+        let currentShipSize = shipsToPlace.shift();
+        let placedCells = [];
+        let totalShipCells = 0;
+        let hitCount = 0;
+
+        document.querySelectorAll("#gameBoard td").forEach(cell => {
+            cell.addEventListener("click", function() {
+                if (placingShips) {
+                    // Colocar barcos
+                    if (!this.classList.contains("ship")) {
+                        this.classList.add("ship");
+                        this.innerText = "B";
+                        placedCells.push(this);
+                        totalShipCells++;
+
+                        if (placedCells.length === currentShipSize) {
+                            if (shipsToPlace.length > 0) {
+                                currentShipSize = shipsToPlace.shift();
+                                placedCells = [];
+                                alert(`¡Coloca un barco de ${currentShipSize} casillas!`);
+                            } else {
+                                placingShips = false;
+                                alert("¡Todos los barcos están colocados! El juego comienza ahora.");
+                            }
+                        }
+                    }
+                } else {
+                    // Disparos
+                    if (!this.classList.contains("hit") && !this.classList.contains("miss")) {
+                        if (this.classList.contains("ship")) {
+                            this.classList.add("hit");
+                            this.innerText = "X";
+                            this.style.backgroundColor = "red";
+                            hitCount++;
+
+                            if (hitCount === totalShipCells) {
+                                document.getElementById("statusMessage").innerText = "¡Perdiste! Todos tus barcos han sido hundidos.";
+                            }
+                        } else {
+                            this.classList.add("miss");
+                            this.innerText = "O";
+                        }
+                    }
+                }
+            });
+        });
+
+        function resetGame() {
+            document.querySelectorAll("td").forEach(cell => {
+                cell.classList.remove("hit", "miss", "ship");
+                cell.innerText = "";
+                cell.style.backgroundColor = "";
+            });
+            placingShips = true;
+            shipsToPlace = [4, 3, 2, 1];
+            currentShipSize = shipsToPlace.shift();
+            placedCells = [];
+            totalShipCells = 0;
+            hitCount = 0;
+            document.getElementById("statusMessage").innerText = "";
+        }
+    </script>
+</body>
+</html>

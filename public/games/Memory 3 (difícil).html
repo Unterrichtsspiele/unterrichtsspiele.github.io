@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory - Mi habitación y verbos</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .game-board { display: grid; grid-template-columns: repeat(6, 100px); gap: 10px; justify-content: center; margin-top: 20px; }
+        .card { width: 90px; height: 90px; background-color: lightgray; display: flex; align-items: center; justify-content: center; 
+                font-size: 14px; cursor: pointer; border-radius: 10px; border: 1px solid black; text-align: center; }
+        .flipped { background-color: white; }
+        .matched { background-color: lightgreen; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <h2>Memory: Verbos y objetos de mi habitación</h2>
+    <p>Encuentra las parejas correctas.</p>
+    <p>Turnos: <span id="turnCounter">0</span></p>
+    <div class="game-board" id="gameBoard"></div>
+    <button onclick="resetGame()">Reiniciar</button>
+
+    <script>
+        let turnCount = 0;
+        const turnCounter = document.getElementById("turnCounter");
+        
+        const cardsData = [
+            { text: "la lámpara", pair: "die Lampe" },
+            { text: "die Lampe", pair: "la lámpara" },
+            { text: "el escritorio", pair: "der Schreibtisch" },
+            { text: "der Schreibtisch", pair: "el escritorio" },
+            { text: "la ventana", pair: "das Fenster" },
+            { text: "das Fenster", pair: "la ventana" },
+            { text: "el espejo", pair: "der Spiegel" },
+            { text: "der Spiegel", pair: "el espejo" },
+            { text: "queremos", pair: "wir wollen" },
+            { text: "wir wollen", pair: "queremos" },
+            { text: "tienes que", pair: "du musst" },
+            { text: "du musst", pair: "tienes que" },
+            { text: "puedo", pair: "ich kann" },
+            { text: "ich kann", pair: "puedo" },
+            { text: "pueden", pair: "sie können" },
+            { text: "sie können", pair: "pueden" },
+            { text: "quieres", pair: "du willst" },
+            { text: "du willst", pair: "quieres" },
+            { text: "tenéis que", pair: "ihr müsst" },
+            { text: "ihr müsst", pair: "tenéis que" },
+            { text: "el armario", pair: "der Kleiderschrank" },
+            { text: "der Kleiderschrank", pair: "el armario" },
+            { text: "la estantería", pair: "das Regal" },
+            { text: "das Regal", pair: "la estantería" },
+            { text: "la alfombra", pair: "der Teppich" },
+            { text: "der Teppich", pair: "la alfombra" },
+            { text: "el portátil", pair: "der Laptop" },
+            { text: "der Laptop", pair: "el portátil" },
+            { text: "las cortinas", pair: "die Vorhänge" },
+            { text: "die Vorhänge", pair: "las cortinas" },
+            { text: "el televisor", pair: "der Fernseher" },
+            { text: "der Fernseher", pair: "el televisor" },
+            { text: "el cojín", pair: "das Kissen" },
+            { text: "das Kissen", pair: "el cojín" },
+            { text: "el póster", pair: "das Poster" },
+            { text: "das Poster", pair: "el póster" }
+        ];
+
+        let shuffledCards = [];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function createBoard() {
+            const board = document.getElementById("gameBoard");
+            board.innerHTML = "";
+            shuffledCards = shuffle([...cardsData]);
+            turnCount = 0;
+            turnCounter.innerText = turnCount;
+
+            shuffledCards.forEach((card, index) => {
+                const div = document.createElement("div");
+                div.classList.add("card");
+                div.dataset.value = card.pair;
+                div.dataset.text = card.text;
+                div.innerText = "?";
+                div.addEventListener("click", () => flipCard(div));
+                board.appendChild(div);
+            });
+        }
+
+        function flipCard(card) {
+            if (lockBoard || card.classList.contains("flipped")) return;
+
+            card.classList.add("flipped");
+            card.innerText = card.dataset.text;
+
+            if (!firstCard) {
+                firstCard = card;
+                return;
+            }
+
+            secondCard = card;
+            lockBoard = true;
+            turnCount++;
+            turnCounter.innerText = turnCount;
+
+            if (firstCard.dataset.text === secondCard.dataset.value || secondCard.dataset.text === firstCard.dataset.value) {
+                firstCard.classList.add("matched");
+                secondCard.classList.add("matched");
+                resetTurn();
+            } else {
+                setTimeout(() => {
+                    firstCard.classList.remove("flipped");
+                    secondCard.classList.remove("flipped");
+                    firstCard.innerText = "?";
+                    secondCard.innerText = "?";
+                    resetTurn();
+                }, 1000);
+            }
+        }
+
+        function resetTurn() {
+            [firstCard, secondCard] = [null, null];
+            lockBoard = false;
+        }
+
+        function resetGame() {
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+            createBoard();
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>

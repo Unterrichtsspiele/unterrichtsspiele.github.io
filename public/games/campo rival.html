@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batalla Naval - Marcador</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { margin: 20px auto; border-collapse: collapse; display: inline-block; }
+        th, td { border: 1px solid black; width: 80px; height: 50px; text-align: center; cursor: pointer; font-size: 20px; }
+        .miss { background-color: lightgray; }  /* Fehlschuss */
+        .hit { background-color: red; color: white; } /* Treffer */
+    </style>
+</head>
+<body>
+    <h2>Batalla Naval - Marcador de Disparos</h2>
+    <p>Haz clic en una casilla para marcar los disparos.</p>
+
+    <div>
+        <h3>Disparos realizados</h3>
+        <table id="gameBoard">
+            <tr>
+                <th></th><th>Yo</th><th>Tú</th><th>Él/Ella</th><th>Nosotros/as</th><th>Vosotros/as</th><th>Ellos/as</th>
+            </tr>
+            <tr><th>Querer</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Tener que</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Poder</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Hablar</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Vivir</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th>Comer</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table>
+    </div>
+
+    <button id="resetButton" onclick="resetGame()">Reiniciar</button>
+
+    <script>
+        document.querySelectorAll("#gameBoard td").forEach(cell => {
+            cell.addEventListener("click", function() {
+                if (!this.classList.contains("miss") && !this.classList.contains("hit")) {
+                    this.classList.add("miss");
+                    this.innerText = "O";
+                } else if (this.classList.contains("miss")) {
+                    this.classList.remove("miss");
+                    this.classList.add("hit");
+                    this.innerText = "X";
+                } else if (this.classList.contains("hit")) {
+                    this.classList.remove("hit");
+                    this.innerText = "";
+                }
+            });
+        });
+
+        function resetGame() {
+            document.querySelectorAll("#gameBoard td").forEach(cell => {
+                cell.classList.remove("miss", "hit");
+                cell.innerText = "";
+            });
+        }
+    </script>
+</body>
+</html>

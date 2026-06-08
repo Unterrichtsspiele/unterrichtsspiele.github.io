@@ -36,13 +36,13 @@ function App() {
             ← Zurück zum Launcher
           </button>
           <h2>{activeGame.title}</h2>
-          <a href={activeGame.url} target="_blank" rel="noopener noreferrer" className="external-btn">
+          <a href={import.meta.env.BASE_URL + activeGame.url} target="_blank" rel="noopener noreferrer" className="external-btn">
             In neuem Fenster öffnen ↗
           </a>
         </header>
         <div className="iframe-container">
           <iframe 
-            src={activeGame.url} 
+            src={import.meta.env.BASE_URL + activeGame.url} 
             title={activeGame.title}
             className="game-iframe"
           ></iframe>
@@ -85,7 +85,7 @@ function App() {
                     Öffnen
                   </button>
                   <a 
-                    href={game.url} 
+                    href={import.meta.env.BASE_URL + game.url} 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="action-btn secondary"

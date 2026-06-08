@@ -32,7 +32,7 @@ function gameManifestPlugin() {
                   return {
                     id: nameWithoutExt,
                     title: title,
-                    url: `/games/${file}`
+                    url: `games/${file}`
                   };
                 });
             }

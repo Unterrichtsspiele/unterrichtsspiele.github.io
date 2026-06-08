@@ -30,7 +30,7 @@ function generateManifest() {
                 return {
                     id: nameWithoutExt,
                     title: title,
-                    url: `/games/${file}`
+                    url: `games/${file}`
                 };
             });
 
